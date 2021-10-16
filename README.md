@@ -8,4 +8,5 @@ You can load the UI using this line;
 local UI = loadstring(game:HttpGet("https://raw.githubusercontent.com/greasemonkey123/yafn-UIOverhaul/main/UI.lua",true))()
 ```
 
-You can directly influence the UI by using the UI.Frame... stuff.
+You can directly influence the UI by using the UI.ui (Returns the ScreenGui)
+Additionally, you can tweak the rating colours using UI.SetRatingColor(string:Rating,color3:Color).
