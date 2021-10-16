@@ -152,7 +152,7 @@ local function tweenScore(newscore)
         TweenService:Create(sVal,TweenInfo.new(
             0.3, -- Time
             Enum.EasingStyle.Quad, -- EasingStyle
-            Enum.EasingDirection.Out, -- EasingDirection
+            Enum.EasingDirection.Out -- EasingDirection
         ),{Value = newscore}):Play()
     end
 end
