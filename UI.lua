@@ -16,6 +16,8 @@ local Accuracy = Instance.new("TextLabel")
 local Misses = Instance.new("TextLabel")
 local Rating = Instance.new("TextLabel")
 local RatingB = Instance.new("TextLabel")
+local highestCombo = 0;
+
 --local storage for the Tweening (v1A)
 local sVal = Instance.new("NumberValue")
 local colorP = Instance.new("Color3Value")
@@ -24,6 +26,20 @@ local colorA = Instance.new("Color3Value")
 local colorB = Instance.new("Color3Value")
 local colorC = Instance.new("Color3Value")
 local colorD = Instance.new("Color3Value")
+
+local hpBar = {}
+hpBar.Image = real.HPBarBG;
+hpBar.Missing = real.HPBarBG.RedBar;
+hpBar.Health = real.HPBarBG.GreenBar;
+
+function hpBar.SetHealthColor(color)
+    hpBar.Health.BackgroundColor3 = color
+end
+function hpBar.SetMissingColor(color)
+    hpBar.Missing.BackgroundColor3 = color
+    hpBar.Image.ImageColor3 = color
+end
+
 do
     Score_TextLabel.Parent = Frame
     Score_TextLabel.Text = "Score"
@@ -144,8 +160,13 @@ local function calculateRating(acc, miss)
     end
 end
 
+local function clearHighestCombo()
+    highestCombo = 0;
+end
+
 local function tweenScore(newscore)
     if newscore == 0 then
+        clearHighestCombo()
         sVal.Value = 0
     else
         newscore = newscore/10
@@ -159,7 +180,7 @@ end
 
 sVal:GetPropertyChangedSignal("Value"):Connect(
     function()
-       Score.Text = tostring(sVal.Value*10) 
+       Score.Text = tostring(math.round(sVal.Value)*10) 
     end
 )
 
@@ -171,14 +192,13 @@ scorelabel:GetPropertyChangedSignal("Text"):Connect(
         tweenScore(tonumber(st[2]))
         Accuracy.Text = "Accuracy : " .. st[11]
         Misses.Text = "Combo Breaks : " .. st[8]
-
         calculateRating(st[11], st[8])
     end
 )
 
 scorelabel.Visible = false
 
-local ret = {ui = NewUI}
+local ret = {ui = NewUI, hp = hpBar}
 
 function ret.SetRatingColor(rating,color)
     if not rating or not color then return end
