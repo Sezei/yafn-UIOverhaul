@@ -27,8 +27,6 @@ local colorB = Instance.new("Color3Value")
 local colorC = Instance.new("Color3Value")
 local colorD = Instance.new("Color3Value")
 
-local ret = {ui = NewUI, hp = hpBar, settings = {tweenScore = true}}
-
 local hpBar = {}
 hpBar.Image = real.HPBarBG;
 hpBar.Missing = real.HPBarBG.RedBar;
@@ -41,6 +39,8 @@ function hpBar.SetMissingColor(color)
    hpBar.Missing.BackgroundColor3 = color
    hpBar.Image.ImageColor3 = color
 end
+
+local ret = {ui = NewUI, hp = hpBar, settings = {tweenScore = true}}
 
 do
    Score_TextLabel.Parent = Frame
