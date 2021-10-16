@@ -1,3 +1,4 @@
+local TweenService = game:GetService("TweenService")
 local plr = game:GetService("Players").LocalPlayer
 local ui = plr.PlayerGui:FindFirstChild("GameUI")
 local scorelabel = ui.ScoreLabel
@@ -15,6 +16,14 @@ local Accuracy = Instance.new("TextLabel")
 local Misses = Instance.new("TextLabel")
 local Rating = Instance.new("TextLabel")
 local RatingB = Instance.new("TextLabel")
+--local storage for the Tweening (v1A)
+local sVal = Instance.new("NumberValue")
+local colorP = Instance.new("Color3Value")
+local colorS = Instance.new("Color3Value")
+local colorA = Instance.new("Color3Value")
+local colorB = Instance.new("Color3Value")
+local colorC = Instance.new("Color3Value")
+local colorD = Instance.new("Color3Value")
 do
     Score_TextLabel.Parent = Frame
     Score_TextLabel.Text = "Score"
@@ -87,6 +96,15 @@ do
     RatingB.TextStrokeTransparency = 0.3
     RatingB.Size = UDim2.new(0, 50, 0, 19)
     RatingB.TextYAlignment = Enum.TextYAlignment.Bottom
+    --
+    -- VERSION 1A STUFF
+    sVal.Value = 0;
+    colorP.Value = Color3.new(0,0.666667,1);
+    colorS.Value = Color3.new(1,1,0.498039);
+    colorA.Value = Color3.new(1,0.666667,0);
+    colorB.Value = Color3.new(1,0.466667,0);
+    colorC.Value = Color3.new(1,0.231373,0);
+    colorD.Value = Color3.new(0.65098,0.65098,0.65098);
 end
 
 local function calculateRating(acc, miss)
@@ -104,31 +122,53 @@ local function calculateRating(acc, miss)
 
     if acc == 100 then
         Rating.Text = "P"
-        Rating.TextColor3 = Color3.new(0, 0.666667, 1)
+        Rating.TextColor3 = colorP.Value
     elseif acc > 95 then
         Rating.Text = "S"
-        Rating.TextColor3 = Color3.new(1, 1, 0.498039)
+        Rating.TextColor3 = colorS.Value
     elseif acc > 90 then
         Rating.Text = "A"
-        Rating.TextColor3 = Color3.new(1, 0.666667, 0)
+        Rating.TextColor3 = colorA.Value
     elseif acc > 85 then
         Rating.Text = "B"
-        Rating.TextColor3 = Color3.new(1, 0.466667, 0)
+        Rating.TextColor3 = colorB.Value
     elseif acc > 75 then
         Rating.Text = "C"
-        Rating.TextColor3 = Color3.new(1, 0.231373, 0)
+        Rating.TextColor3 = colorC.Value
+    elseif acc == 0 and sVal.Value == 0 and miss == 0 then
+        Rating.Text = "-"
+        Rating.TextColor3 = Color3.new(1,1,1);
     else
         Rating.Text = "D"
-        Rating.TextColor3 = Color3.new(0.65098, 0.65098, 0.65098)
+        Rating.TextColor3 = colorD.Value
     end
 end
+
+local function tweenScore(newscore)
+    if newscore == 0 then
+        sVal.Value = 0
+    else
+        newscore = newscore/10
+        TweenService:Create(sVal,TweenInfo.new(
+            0.3, -- Time
+            Enum.EasingStyle.Quad, -- EasingStyle
+            Enum.EasingDirection.Out, -- EasingDirection
+        ),{Value = newscore}):Play()
+    end
+end
+
+sVal:GetPropertyChangedSignal("Value"):Connect(
+    function()
+       Score.Text = tostring(sVal.Value*10) 
+    end
+)
 
 scorelabel:GetPropertyChangedSignal("Text"):Connect(
     function()
         -- "Score: 232130 | Combo: 128 | Misses: 9 | Accuracy: 97%"
         --	1	   2	  3 4	   5   6 7       8 9 10        11
         local st = string.split(scorelabel.Text, " ")
-        Score.Text = st[2]
+        tweenScore(tonumber(st[2]))
         Accuracy.Text = "Accuracy : " .. st[11]
         Misses.Text = "Combo Breaks : " .. st[8]
 
@@ -138,4 +178,23 @@ scorelabel:GetPropertyChangedSignal("Text"):Connect(
 
 scorelabel.Visible = false
 
-return NewUI
+local ret = {ui = NewUI}
+
+function ret.SetRatingColor(rating,color)
+    if not rating or not color then return end
+    if rating == "P" then
+        colorP.Value = color
+    elseif rating == "S" then
+        colorS.Value = color
+    elseif rating == "A" then
+        colorA.Value = color
+    elseif rating == "B" then
+        colorB.Value = color
+    elseif rating == "C" then
+        colorC.Value = color
+    elseif rating == "D" then
+        colorD.Value = color
+    end
+end
+
+return ret
