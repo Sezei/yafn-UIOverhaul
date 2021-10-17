@@ -53,7 +53,7 @@ function hpBar.HealthChanged(newhealth) -- Health Changed.
 end
 
 local function calculateHealth(Scale)
-    return math.min(math.round(Scale / 0.98), 100)
+    return math.min(math.round((Scale*100) / 0.98), 100)
 end
 local firedSHealth = false
 local firedNHealth = false
@@ -72,7 +72,7 @@ hpBar.Health:GetPropertyChangedSignal("Size"):Connect(
             end
         elseif h <= 15 then
             if not firedSHealth then
-               hpBar.HitFHealth()
+               hpBar.HitLHealth() -- HOW DID I MISS THIS
                firedNHealth = false
                firedSHealth = true
             end
