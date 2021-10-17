@@ -53,7 +53,7 @@ function hpBar.HealthChanged(newhealth) -- Health Changed.
 end
 
 local function calculateHealth(Scale)
-    return math.max(math.round(Scale / 0.98), 100)
+    return math.min(math.round(Scale / 0.98), 100)
 end
 local firedSHealth = false
 local firedNHealth = false
