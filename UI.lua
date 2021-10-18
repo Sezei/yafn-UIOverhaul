@@ -17,6 +17,7 @@ local Misses = Instance.new("TextLabel")
 local Rating = Instance.new("TextLabel")
 local RatingB = Instance.new("TextLabel")
 local highestCombo = 0
+local LastMisses = 0
 
 --local storage for the Tweening (v1A)
 local sVal = Instance.new("NumberValue")
@@ -46,6 +47,9 @@ function hpBar.HitNHealth() -- Bind Hit Normal Health - Runs function when Healt
     return
 end
 function hpBar.HitLHealth() -- Bind Hit Low Health - Runs function when Health gets below 10%.
+    return
+end
+function hpBar.onMiss() -- Fires when a miss has been added, no matter the 
     return
 end
 function hpBar.HealthChanged(newhealth) -- Health Changed.
@@ -212,6 +216,7 @@ local function clearHighestCombo()
     firedSHealth = false
     firedNHealth = false
     highestCombo = 0
+    LastMisses = 0
 end
 
 local function tweenScore(newscore)
@@ -246,6 +251,10 @@ scorelabel:GetPropertyChangedSignal("Text"):Connect(
         tweenScore(tonumber(st[2]))
         Accuracy.Text = "Accuracy : " .. st[11]
         Misses.Text = "Combo Breaks : " .. st[8]
+        if tonumber(st[8]) > LastMisses then
+            LastMisses = tonumber(st[8])
+            hpBar.onMiss()
+        end
         calculateRating(st[11], st[8])
     end
 )
@@ -268,6 +277,25 @@ function ret.SetRatingColor(rating, color)
         colorC.Value = color
     elseif rating == "D" then
         colorD.Value = color
+    end
+end
+
+function ret.GetRatingColor(rating)
+    if not rating then
+        return nil
+    end
+    if rating == "P" then
+        return colorP.Value
+    elseif rating == "S" then
+        return colorS.Value
+    elseif rating == "A" then
+        return colorA.Value
+    elseif rating == "B" then
+        return colorB.Value
+    elseif rating == "C" then
+        return colorC.Value
+    elseif rating == "D" then
+        return colorD.Value
     end
 end
 
