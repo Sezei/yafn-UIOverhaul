@@ -5,6 +5,7 @@ local scorelabel = ui.ScoreLabel
 local real = ui.realGameUI
 local NewUI = Instance.new("ScreenGui")
 NewUI.Parent = plr.PlayerGui
+NewUI.ResetOnSpawn = false
 local Frame = Instance.new("Frame")
 Frame.Parent = NewUI
 Frame.AnchorPoint = Vector2.new(0, 1)
@@ -94,6 +95,7 @@ local ret = {ui = NewUI, hp = hpBar, settings = {tweenScore = true}}
 
 do
     Score_TextLabel.Parent = Frame
+    Score_TextLabel.Name = "Score_TextLabel"
     Score_TextLabel.Text = "Score"
     Score_TextLabel.Position = UDim2.new(0, 20, 0, 0)
     Score_TextLabel.BackgroundTransparency = 1
@@ -106,6 +108,7 @@ do
     Score_TextLabel.Size = UDim2.new(0, 200, 0, 32)
     --
     Score.Parent = Frame
+    Score.Name = "Score"
     Score.Text = "---"
     Score.Position = UDim2.new(0, 20, 0, 38)
     Score.BackgroundTransparency = 1
@@ -118,6 +121,7 @@ do
     Score.Size = UDim2.new(0, 200, 0, 32)
     --
     Accuracy.Parent = Frame
+    Accuracy.Name = "Accuracy"
     Accuracy.Text = "Accuracy : ---%"
     Accuracy.Position = UDim2.new(0, 80, 0, -30)
     Accuracy.BackgroundTransparency = 1
@@ -130,6 +134,7 @@ do
     Accuracy.Size = UDim2.new(0, 200, 0, 32)
     --
     Misses.Parent = Frame
+    Misses.Name = "Misses"
     Misses.Text = "Combo Breaks : 0"
     Misses.Position = UDim2.new(0, 80, 0, -60)
     Misses.BackgroundTransparency = 1
@@ -142,6 +147,7 @@ do
     Misses.Size = UDim2.new(0, 200, 0, 32)
     --
     Rating.Parent = Frame
+    Rating.Name = "Rating"
     Rating.Text = "-"
     Rating.Position = UDim2.new(0, 20, 0, -50)
     Rating.BackgroundTransparency = 1
@@ -154,6 +160,7 @@ do
     Rating.TextYAlignment = Enum.TextYAlignment.Bottom
     --
     RatingB.Parent = Frame
+    RatingB.Name = "RatingB"
     RatingB.Text = "(---)"
     RatingB.Position = UDim2.new(0, 20, 0, -19)
     RatingB.BackgroundTransparency = 1
