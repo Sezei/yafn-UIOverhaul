@@ -17,7 +17,6 @@ local Accuracy = Instance.new("TextLabel")
 local Misses = Instance.new("TextLabel")
 local Rating = Instance.new("TextLabel")
 local RatingB = Instance.new("TextLabel")
-local healthLabel = Instance.new("TextLabel")
 local highestCombo = 0
 local LastMisses = 0
 
@@ -69,7 +68,6 @@ hpBar.Health:GetPropertyChangedSignal("Size"):Connect(
         -- Listen to Size
         -- After some research, ~0.98 scale is full, 0 is death.
         local h = calculateHealth(hpBar.Health.Size.X.Scale)
-        healthLabel.Text = "Health: ".. tostring(h) .."%"
         hpBar.HealthChanged(h)
         if h >= 85 then
             if not firedSHealth then
@@ -174,17 +172,6 @@ do
     RatingB.Size = UDim2.new(0, 50, 0, 19)
     RatingB.TextYAlignment = Enum.TextYAlignment.Bottom
     --
-    healthLabel.Parent = real.HPBarBG
-    healthLabel.Name = "HealthLabel"
-    healthLabel.Text = "Health: ---%"
-    healthLabel.Position = UDim2.new(0.5, -100, 0.5, -55)
-    healthLabel.BackgroundTransparency = 1
-    healthLabel.TextSize = 22
-    healthLabel.Font = Enum.Font.Ubuntu
-    healthLabel.TextColor3 = Color3.new(1, 1, 1)
-    healthLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
-    healthLabel.TextStrokeTransparency = 0
-    healthLabel.Size = UDim2.new(0, 200, 0, 50)
     -- VERSION 1A STUFF
     sVal.Value = 0
     colorP.Value = Color3.new(0, 0.666667, 1)
@@ -241,12 +228,6 @@ end
 
 local function tweenScore(newscore)
     if ret.settings.tweenScore == true then
-        if newscore < 0 then
-            sVal.TextColor3 = Color3.new(1,0.2,0.2);
-        else
-            sVal.TextColor3 = Color3.new(1,1,1);
-        end
-        
         if newscore == 0 then
             clearHighestCombo()
             sVal.Value = 0
