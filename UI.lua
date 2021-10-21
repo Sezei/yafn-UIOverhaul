@@ -69,6 +69,7 @@ hpBar.Health:GetPropertyChangedSignal("Size"):Connect(
         -- Listen to Size
         -- After some research, ~0.98 scale is full, 0 is death.
         local h = calculateHealth(hpBar.Health.Size.X.Scale)
+        healthLabel.Text = "Health: ".. tostring(h) .."%"
         hpBar.HealthChanged(h)
         if h >= 85 then
             if not firedSHealth then
