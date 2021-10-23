@@ -19,6 +19,7 @@ local Rating = Instance.new("TextLabel")
 local RatingB = Instance.new("TextLabel")
 local highestCombo = 0
 local LastMisses = 0
+local ShouldHaveDied = false;
 
 --local storage for the Tweening (v1A)
 local sVal = Instance.new("NumberValue")
@@ -69,6 +70,9 @@ hpBar.Health:GetPropertyChangedSignal("Size"):Connect(
         -- After some research, ~0.98 scale is full, 0 is death.
         local h = calculateHealth(hpBar.Health.Size.X.Scale)
         hpBar.HealthChanged(h)
+        if h == 0 then
+           ShouldHaveDied = true; 
+        end
         if h >= 85 then
             if not firedSHealth then
                hpBar.HitFHealth()
@@ -187,14 +191,18 @@ local function calculateRating(acc, miss)
     local miss = tonumber(miss)
 
     --RatingB
-    if miss == 0 then
-        RatingB.Text = "(FC)"
-    elseif miss < 10 then
-        RatingB.Text = "(SDCB)"
+    if not ShouldHaveDied then
+        if miss == 0 then
+            RatingB.Text = "(FC)"
+        elseif miss < 10 then
+            RatingB.Text = "(SDCB)"
+        else
+            RatingB.Text = "(Clear)"
+        end
     else
-        RatingB.Text = "(Clear)"
+        RatingB.Text = "(X)"
     end
-
+    
     if acc == 100 then
         Rating.Text = "P"
         Rating.TextColor3 = colorP.Value
@@ -217,6 +225,12 @@ local function calculateRating(acc, miss)
         Rating.Text = "D"
         Rating.TextColor3 = colorD.Value
     end
+    
+    if miss == 0 then
+        Rating.Text = Rating.Text.."+"
+    elseif miss >= 50 then
+        Rating.Text = Rating.Text.."-"
+    end
 end
 
 local function clearHighestCombo()
@@ -224,6 +238,7 @@ local function clearHighestCombo()
     firedNHealth = false
     highestCombo = 0
     LastMisses = 0
+    ShouldHaveDied = false;
 end
 
 local function tweenScore(newscore)
