@@ -189,6 +189,7 @@ end
 local function calculateRating(acc, miss)
     local acc = tonumber(string.sub(acc, 1, -2))
     local miss = tonumber(miss)
+    local avoidAddition = false;
 
     --RatingB
     if not ShouldHaveDied then
@@ -206,30 +207,34 @@ local function calculateRating(acc, miss)
     if acc == 100 then
         Rating.Text = "P"
         Rating.TextColor3 = colorP.Value
-    elseif acc > 95 then
+        avoidAddition = true
+    elseif acc >= 95 then
         Rating.Text = "S"
         Rating.TextColor3 = colorS.Value
-    elseif acc > 90 then
+    elseif acc >= 90 then
         Rating.Text = "A"
         Rating.TextColor3 = colorA.Value
-    elseif acc > 85 then
+    elseif acc >= 85 then
         Rating.Text = "B"
         Rating.TextColor3 = colorB.Value
-    elseif acc > 75 then
+    elseif acc >= 75 then
         Rating.Text = "C"
         Rating.TextColor3 = colorC.Value
     elseif acc == 0 and sVal.Value == 0 and miss == 0 then
         Rating.Text = "-"
         Rating.TextColor3 = Color3.new(1, 1, 1)
+        avoidAddition = true
     else
         Rating.Text = "D"
         Rating.TextColor3 = colorD.Value
     end
     
-    if miss == 0 then
-        Rating.Text = Rating.Text.."+"
-    elseif miss >= 50 then
-        Rating.Text = Rating.Text.."-"
+    if not avoidAddition then
+        if miss == 0 then
+            Rating.Text = Rating.Text.."+"
+        elseif miss >= 50 then
+            Rating.Text = Rating.Text.."-"
+        end
     end
 end
 
