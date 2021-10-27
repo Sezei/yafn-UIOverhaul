@@ -1,4 +1,5 @@
-local TweenService = game:GetService("TweenService")
+local s,f = pcall(function()
+    local TweenService = game:GetService("TweenService")
 local plr = game:GetService("Players").LocalPlayer
 local ui = plr.PlayerGui:FindFirstChild("GameUI")
 local scorelabel = ui.ScoreLabel
@@ -30,6 +31,7 @@ local Bads = 0
 
 local highestCombo = 0
 local LastMisses = 0
+local totalNotes = 0
 local ShouldHaveDied = false;
 
 --local storage for the Tweening (v1A)
@@ -203,53 +205,53 @@ do
     Combo.Parent = Frame
     Combo.Name = "Combo"
     Combo.Text = "Combo : --- (---)"
-    Combo.Position = UDim2.new(0, 20, 0, -80)
+    Combo.Position = UDim2.new(0, 20, 0, -85)
     Combo.BackgroundTransparency = 1
     Combo.TextSize = 24
     Combo.Font = Enum.Font.Ubuntu
     Combo.TextXAlignment = Enum.TextXAlignment.Left
     Combo.TextColor3 = Color3.new(1, 1, 1)
     Combo.TextStrokeColor3 = Color3.new(0, 0, 0)
-    Combo.TextStrokeTransparency = 0
+    Combo.TextStrokeTransparency = 0.5
     Combo.Size = UDim2.new(0, 200, 0, 32)
     --
     SicksLabel.Parent = Frame
     SicksLabel.Name = "SicksLabel"
     SicksLabel.Text = "Sicks : ---"
-    SicksLabel.Position = UDim2.new(0, 20, 0, -100)
+    SicksLabel.Position = UDim2.new(0, 20, 0, -105)
     SicksLabel.BackgroundTransparency = 1
     SicksLabel.TextSize = 16
     SicksLabel.Font = Enum.Font.Ubuntu
     SicksLabel.TextXAlignment = Enum.TextXAlignment.Left
     SicksLabel.TextColor3 = Color3.new(1, 1, 1)
     SicksLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
-    SicksLabel.TextStrokeTransparency = 0
+    SicksLabel.TextStrokeTransparency = 0.7
     SicksLabel.Size = UDim2.new(0, 200, 0, 32)
     --
     GoodsLabel.Parent = Frame
     GoodsLabel.Name = "GoodsLabel"
     GoodsLabel.Text = "Goods : ---"
-    GoodsLabel.Position = UDim2.new(0, 20, 0, -110)
+    GoodsLabel.Position = UDim2.new(0, 20, 0, -120)
     GoodsLabel.BackgroundTransparency = 1
     GoodsLabel.TextSize = 16
     GoodsLabel.Font = Enum.Font.Ubuntu
     GoodsLabel.TextXAlignment = Enum.TextXAlignment.Left
     GoodsLabel.TextColor3 = Color3.new(1, 1, 1)
     GoodsLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
-    GoodsLabel.TextStrokeTransparency = 0
+    GoodsLabel.TextStrokeTransparency = 0.7
     GoodsLabel.Size = UDim2.new(0, 200, 0, 32)
     --
     BadsLabel.Parent = Frame
     BadsLabel.Name = "BadsLabel"
     BadsLabel.Text = "Bads : ---"
-    BadsLabel.Position = UDim2.new(0, 20, 0, -120)
+    BadsLabel.Position = UDim2.new(0, 20, 0, -135)
     BadsLabel.BackgroundTransparency = 1
     BadsLabel.TextSize = 16
     BadsLabel.Font = Enum.Font.Ubuntu
     BadsLabel.TextXAlignment = Enum.TextXAlignment.Left
     BadsLabel.TextColor3 = Color3.new(1, 1, 1)
     BadsLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
-    BadsLabel.TextStrokeTransparency = 0
+    BadsLabel.TextStrokeTransparency = 0.7
     BadsLabel.Size = UDim2.new(0, 200, 0, 32)
     -- VERSION 1A STUFF
     sVal.Value = 0
@@ -321,17 +323,15 @@ local function clearHighestCombo()
     Sicks = 0
     Goods = 0
     Bads = 0
+    totalNotes = 0
     ShouldHaveDied = false;
 end
 
-local getAccuracy(cmbo,misses)
-    local weights = { Sick = 100, Good = 80, Bad = 40, Miss = 0 } -- In-game it's 0.5 for bad and 0.1 for awful so i estimated it to be 0.4
-
-    local total = cmbo * 100
-    
-    local calc = (Sicks * Sick + Goods * Good + Bads * Bad + misses*0)/total
+local function getAccuracy()
+    local weights = { Sick = 100, Good = 80, Bad = 40} -- In-game it's 0.5 for bad and 0.1 for awful so i estimated it to be 0.4
+    local total = totalNotes * 100
+    local calc = (Sicks * weights.Sick + Goods * weights.Good + Bads * weights.Bad)/total
     local returning = tonumber(string.sub(tostring(calc),1,5)) -- 100% or 99.99%
-  
     return returning
 end
 
@@ -375,13 +375,19 @@ sVal:GetPropertyChangedSignal("Value"):Connect(
 scorelabel:GetPropertyChangedSignal("Text"):Connect(
     function()
         -- "Score: 999999 | Combo: 999 | Misses: 9 | Accuracy: 99%"
-        --  1	     2	    3 4	     5   6 7       8 9 10        11
+        --  1	   2	  3 4	   5   6 7       8 9 10        11
+        totalNotes = totalNotes+1
         local st = string.split(scorelabel.Text, " ")
-        highestCombo = math.max( tonumber(st[5]) , highestCombo )    
+        highestCombo = math.max( tonumber(st[5]) , highestCombo )   
+        print("Getting ScoreTween")
         tweenScore(tonumber(st[2]))
-        Accuracy.Text = "Accuracy : " .. getAccuracy(tonumber(st[5],tonumber(st[8]))
+        print("ScoreTween Sent")
+        Accuracy.Text = "Accuracy : " .. getAccuracy()
+        print("Accuracy Set")
         Misses.Text = "Combo Breaks : " .. st[8]
+        print("CB Set")
         Combo.Text = "Combo : "..st[5].." ("..tostring(highestCombo)..")"
+        print("Combo Set")
         SicksLabel.Text = "Sicks : "..Sicks
         GoodsLabel.Text = "Goods : "..Goods
         BadsLabel.Text = "Bads : "..Bads
@@ -434,3 +440,5 @@ function ret.GetRatingColor(rating)
 end
 
 return ret
+
+end) if not s then warn(f) end
