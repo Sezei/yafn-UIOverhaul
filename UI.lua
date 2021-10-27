@@ -180,14 +180,14 @@ do
     Combo.Parent = Frame
     Combo.Name = "Combo"
     Combo.Text = "Combo : --- (---)"
-    Combo.Position = UDim2.new(0, 20, 0, -80)
+    Combo.Position = UDim2.new(0, 20, 0, -90)
     Combo.BackgroundTransparency = 1
     Combo.TextSize = 24
     Combo.Font = Enum.Font.Ubuntu
     Combo.TextXAlignment = Enum.TextXAlignment.Left
     Combo.TextColor3 = Color3.new(1, 1, 1)
     Combo.TextStrokeColor3 = Color3.new(0, 0, 0)
-    Combo.TextStrokeTransparency = 0
+    Combo.TextStrokeTransparency = 0.5
     Combo.Size = UDim2.new(0, 200, 0, 32)
     -- VERSION 1A STUFF
     sVal.Value = 0
@@ -277,6 +277,16 @@ local function tweenScore(newscore)
     end
 end
 
+local function comboBreak()
+    Combo.TextSize = 28
+    Combo.TextColor3 = Color3.new(1,0.2,0.2)
+    TweenService:Create(
+        Combo,
+        TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        {TextColor3 = Color3.new(1,1,1), TextSize = 24}
+    ):Play()
+end
+
 sVal:GetPropertyChangedSignal("Value"):Connect(
     function()
         Score.Text = tostring(math.round(sVal.Value) * 10)
@@ -288,13 +298,14 @@ scorelabel:GetPropertyChangedSignal("Text"):Connect(
         -- "Score: 232130 | Combo: 128 | Misses: 9 | Accuracy: 97%"
         --  1	  2	     3 4	  5   6 7       8 9 10        11
         local st = string.split(scorelabel.Text, " ")
-        highestCombo = math.max( tonumber(st[5]) , highestCombo )  
+        highestCombo = math.max( tonumber(st[5]) , highestCombo )
         tweenScore(tonumber(st[2]))
         Accuracy.Text = "Accuracy : " .. st[11]
         Misses.Text = "Combo Breaks : " .. st[8]
         Combo.Text = "Combo : "..st[5].." ("..tostring(highestCombo)..")"
         if tonumber(st[8]) > LastMisses then
             LastMisses = tonumber(st[8])
+            comboBreak()
             hpBar.onMiss()
         end
         calculateRating(st[11], st[8])
