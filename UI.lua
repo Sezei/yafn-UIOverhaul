@@ -277,7 +277,8 @@ local function tweenScore(newscore)
     end
 end
 
-local function comboBreak()
+local function comboBreak(cmbo)
+    if cmbo < 10 then return end
     Combo.TextSize = 28
     Combo.TextColor3 = Color3.new(1,0.2,0.2)
     TweenService:Create(
@@ -293,19 +294,22 @@ sVal:GetPropertyChangedSignal("Value"):Connect(
     end
 )
 
+local lastCombo = 0;
+
 scorelabel:GetPropertyChangedSignal("Text"):Connect(
     function()
         -- "Score: 232130 | Combo: 128 | Misses: 9 | Accuracy: 97%"
         --  1	  2	     3 4	  5   6 7       8 9 10        11
         local st = string.split(scorelabel.Text, " ")
         highestCombo = math.max( tonumber(st[5]) , highestCombo )
+        if tonumber(st[5]) ~= 0 then lastCombo = tonumber(st[5]) end
         tweenScore(tonumber(st[2]))
         Accuracy.Text = "Accuracy : " .. st[11]
         Misses.Text = "Combo Breaks : " .. st[8]
         Combo.Text = "Combo : "..st[5].." ("..tostring(highestCombo)..")"
         if tonumber(st[8]) > LastMisses then
             LastMisses = tonumber(st[8])
-            comboBreak()
+            comboBreak(lastCombo)
             hpBar.onMiss()
         end
         calculateRating(st[11], st[8])
