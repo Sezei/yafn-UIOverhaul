@@ -2,7 +2,7 @@ local TweenService = game:GetService("TweenService")
 local plr = game:GetService("Players").LocalPlayer
 local ui = plr.PlayerGui:FindFirstChild("GameUI")
 local scorelabel = ui.ScoreLabel
-local real = ui.realGameUI
+local real = ui.realGameUI:FindFirstChild("Notes")
 local NewUI = Instance.new("ScreenGui")
 NewUI.Parent = plr.PlayerGui
 NewUI.ResetOnSpawn = false
@@ -33,8 +33,8 @@ local colorD = Instance.new("Color3Value")
 
 local hpBar = {}
 hpBar.Image = real.HPBarBG
-hpBar.Missing = real.HPBarBG.RedBar
-hpBar.Health = real.HPBarBG.GreenBar
+hpBar.Missing = real.HPBarBG.BarContainer.RedBar
+hpBar.Health = real.HPBarBG.BarContainer.GreenBar
 
 function hpBar.SetHealthColor(color)
     hpBar.Health.BackgroundColor3 = color
@@ -60,7 +60,7 @@ function hpBar.HealthChanged(newhealth) -- Health Changed.
 end
 
 local function calculateHealth(Scale)
-    return math.min(math.round((Scale*100) / 0.98), 100)
+    return math.ceil(Scale*100)
 end
 local firedSHealth = false
 local firedNHealth = false
@@ -68,7 +68,6 @@ local firedNHealth = false
 hpBar.Health:GetPropertyChangedSignal("Size"):Connect(
     function()
         -- Listen to Size
-        -- After some research, ~0.98 scale is full, 0 is death.
         local h = calculateHealth(hpBar.Health.Size.X.Scale)
         hpBar.HealthChanged(h)
         if h == 0 then
